@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Модели автомобилей - AutoDealer</title>
+    <link rel="stylesheet" th:href="@{/css/admin.css}">
+</head>
+<body>
+<div class="admin-container">
+    <aside class="sidebar">
+        <h2>AutoDealer</h2>
+        <nav class="admin-nav">
+            <a th:href="@{/admin/dashboard}">Панель управления</a>
+            <a th:href="@{/admin/cars}" class="active">Модели автомобилей</a>
+            <a th:href="@{/admin/suppliers}">Поставщики</a>
+            <a th:href="@{/admin/prices}">Прайс-лист</a>
+            <a th:href="@{/admin/customers}">Клиенты</a>
+            <a th:href="@{/admin/sales}">Продажи</a>
+            <a th:href="@{/admin/employees}">Сотрудники</a>
+            <a th:href="@{/admin/requests}">Запросы</a>
+            <a th:href="@{/admin/analytics}">Аналитика</a>
+            <a th:href="@{/}">Публичный сайт</a>
+            <a th:href="@{/logout}">Выйти</a>
+        </nav>
+    </aside>
+
+    <main class="main-content">
+        <header class="content-header">
+            <h1>Модели автомобилей</h1>
+            <a th:href="@{/admin/cars/new}" class="btn btn-primary">Добавить модель</a>
+        </header>
+
+        <table class="data-table">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Марка</th>
+                <th>Модель</th>
+                <th>Цвет</th>
+                <th>Мощность</th>
+                <th>Коробка передач</th>
+                <th>Двери</th>
+                <th>Действия</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="car : ${cars}">
+                <td th:text="${car.id}">1</td>
+                <td th:text="${car.brand}">Марка</td>
+                <td th:text="${car.name}">Модель</td>
+                <td th:text="${car.color}">Цвет</td>
+                <td><span th:text="${car.enginePower}">Мощность</span> л.с.</td>
+                <td th:text="${car.transmission}">Коробка передач</td>
+                <td th:text="${car.doors}">Двери</td>
+                <td class="actions">
+                    <a th:href="@{'/admin/cars/' + ${car.id} + '/edit'}" class="btn-action btn-edit">Редактировать</a>
+                    <form th:action="@{'/admin/cars/' + ${car.id} + '/delete'}" method="post" style="display:inline;">
+                        <button type="submit" class="btn-action btn-delete" onclick="return confirm('Удалить эту модель?')">Удалить</button>
+                    </form>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </main>
+</div>
+</body>
+</html>

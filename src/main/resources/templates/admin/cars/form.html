@@ -1,0 +1,102 @@
+
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Модель автомобиля - AutoDealer</title>
+    <link rel="stylesheet" th:href="@{/css/admin.css}">
+</head>
+<body>
+<div class="admin-container">
+    <aside class="sidebar">
+        <h2>AutoDealer</h2>
+        <nav class="admin-nav">
+            <a th:href="@{/admin/dashboard}">Панель управления</a>
+            <a th:href="@{/admin/cars}" class="active">Модели автомобилей</a>
+            <a th:href="@{/admin/suppliers}">Поставщики</a>
+            <a th:href="@{/admin/prices}">Прайс-лист</a>
+            <a th:href="@{/admin/customers}">Клиенты</a>
+            <a th:href="@{/admin/sales}">Продажи</a>
+            <a th:href="@{/admin/employees}">Сотрудники</a>
+            <a th:href="@{/admin/requests}">Запросы</a>
+            <a th:href="@{/admin/analytics}">Аналитика</a>
+            <a th:href="@{/}">Публичный сайт</a>
+            <a th:href="@{/logout}">Выйти</a>
+        </nav>
+    </aside>
+
+    <main class="main-content">
+        <header class="content-header">
+            <h1 th:text="${car.id != null ? 'Редактировать модель' : 'Добавить модель'}">Модель</h1>
+            <a th:href="@{/admin/cars}" class="btn btn-secondary">Назад</a>
+        </header>
+
+        <form th:action="@{${car.id != null ? '/admin/cars/' + car.id + '/update' : '/admin/cars'}}"
+              th:object="${car}" method="post" class="admin-form">
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="brand">Марка *</label>
+                    <input type="text" id="brand" th:field="*{brand}" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="name">Модель *</label>
+                    <input type="text" id="name" th:field="*{name}" required>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="color">Цвет</label>
+                    <input type="text" id="color" th:field="*{color}">
+                </div>
+
+                <div class="form-group">
+                    <label for="upholstery">Обивка салона</label>
+                    <input type="text" id="upholstery" th:field="*{upholstery}">
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="engineType">Тип двигателя</label>
+                    <input type="text" id="engineType" th:field="*{engineType}">
+                </div>
+
+                <div class="form-group">
+                    <label for="enginePower">Мощность (л.с.)</label>
+                    <input type="number" id="enginePower" th:field="*{enginePower}">
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="transmission">Коробка передач</label>
+                    <select id="transmission" th:field="*{transmission}">
+                        <option value="Автоматическая">Автоматическая</option>
+                        <option value="Механическая">Механическая</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="doors">Количество дверей</label>
+                    <input type="number" id="doors" th:field="*{doors}">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="description">Описание</label>
+                <textarea id="description" th:field="*{description}" rows="4"></textarea>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">Сохранить</button>
+                <a href="/admin/cars" class="btn btn-secondary">Отмена</a>
+            </div>
+        </form>
+    </main>
+</div>
+</body>
+</html>

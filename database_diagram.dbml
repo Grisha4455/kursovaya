@@ -1,0 +1,172 @@
+// AutoDealer Database Schema
+// Use this at https://dbdiagram.io/
+
+Table car_models {
+  id bigint [pk, increment]
+  name varchar(100) [not null]
+  brand varchar(50) [not null]
+  color varchar(50)
+  upholstery varchar(50)
+  engine_type varchar(50)
+  engine_power int
+  transmission varchar(50)
+  doors int
+  description text
+  created_at timestamp [default: `CURRENT_TIMESTAMP`]
+}
+
+Table suppliers {
+  id bigint [pk, increment]
+  name varchar(100) [not null]
+  contact_person varchar(100)
+  email varchar(100)
+  phone varchar(20)
+  address varchar(255)
+  created_at timestamp [default: `CURRENT_TIMESTAMP`]
+}
+
+Table car_model_suppliers {
+  car_model_id bigint [pk, not null]
+  supplier_id bigint [pk, not null]
+  
+  indexes {
+    (car_model_id, supplier_id) [pk]
+  }
+}
+
+Table price_list {
+  id bigint [pk, increment]
+  car_model_id bigint [not null]
+  production_year int [not null]
+  base_price decimal(12,2) [not null]
+  pre_sale_preparation decimal(12,2) [default: 0]
+  transport_costs decimal(12,2) [default: 0]
+  final_price decimal(12,2) [note: 'Generated: base_price + pre_sale_preparation + transport_costs']
+  created_at timestamp [default: `CURRENT_TIMESTAMP`]
+  
+  indexes {
+    (car_model_id, production_year) [unique]
+  }
+}
+
+Table customers {
+  id bigint [pk, increment]
+  username varchar(50) [unique]
+  password varchar(255)
+  full_name varchar(150) [not null]
+  email varchar(100)
+  phone varchar(50)
+  address varchar(255)
+  active bit(1) [not null, default: 1]
+  created_at timestamp [default: `CURRENT_TIMESTAMP`]
+}
+
+Table employees {
+  id bigint [pk, increment]
+  username varchar(50) [unique, not null]
+  password varchar(255) [not null]
+  full_name varchar(100) [not null]
+  email varchar(100)
+  phone varchar(20)
+  position varchar(50)
+  role varchar(20) [not null, default: 'ROLE_EMPLOYEE']
+  active bit(1) [not null, default: 1]
+  created_at timestamp [default: `CURRENT_TIMESTAMP`]
+}
+
+Table sales {
+  id bigint [pk, increment]
+  customer_id bigint [not null]
+  car_model_id bigint [not null]
+  employee_id bigint [not null]
+  price_list_id bigint [not null]
+  final_price decimal(12,2) [not null]
+  sale_date datetime
+  notes text
+}
+
+Table customer_requests {
+  id bigint [pk, increment]
+  customer_name varchar(100) [not null]
+  email varchar(100)
+  phone varchar(20) [not null]
+  car_model_id bigint
+  message text [not null]
+  status varchar(50) [default: 'NEW']
+  response text
+  employee_id bigint
+  created_at timestamp [default: `CURRENT_TIMESTAMP`]
+  updated_at timestamp
+}
+
+Table test_drives {
+  id bigint [pk, increment]
+  customer_id bigint [not null]
+  car_model_id bigint [not null]
+  test_date date [not null]
+  test_time time [not null]
+  comments varchar(500)
+  status varchar(50) [not null, default: 'В ожидании']
+  created_at timestamp [default: `CURRENT_TIMESTAMP`]
+}
+
+Table service_appointments {
+  id bigint [pk, increment]
+  customer_id bigint [not null]
+  car_info varchar(200) [not null]
+  service_type varchar(100) [not null]
+  appointment_date date [not null]
+  appointment_time time [not null]
+  description text
+  status varchar(50) [not null, default: 'В ожидании']
+  created_at timestamp [default: `CURRENT_TIMESTAMP`]
+}
+
+Table credit_offers {
+  id bigint [pk, increment]
+  name varchar(100) [not null]
+  min_rate decimal(5,2) [not null]
+  max_rate decimal(5,2) [not null]
+  min_term_months int [not null]
+  max_term_months int [not null]
+  min_down_payment_percent decimal(5,2) [not null]
+  description text
+  active bit(1) [not null, default: 1]
+  created_at timestamp [default: `CURRENT_TIMESTAMP`]
+}
+
+// Many-to-Many: CarModel <-> Supplier
+Ref: car_model_suppliers.car_model_id > car_models.id [delete: cascade]
+Ref: car_model_suppliers.supplier_id > suppliers.id [delete: cascade]
+
+// One-to-Many: CarModel -> PriceList
+Ref: price_list.car_model_id > car_models.id [delete: cascade]
+
+// Many-to-One: Sale -> Customer
+Ref: sales.customer_id > customers.id
+
+// Many-to-One: Sale -> CarModel
+Ref: sales.car_model_id > car_models.id
+
+// Many-to-One: Sale -> Employee
+Ref: sales.employee_id > employees.id
+
+// Many-to-One: Sale -> PriceList
+Ref: sales.price_list_id > price_list.id
+
+// Many-to-One: CustomerRequest -> CarModel
+Ref: customer_requests.car_model_id > car_models.id
+
+// Many-to-One: CustomerRequest -> Employee
+Ref: customer_requests.employee_id > employees.id
+
+// Many-to-One: TestDrive -> Customer
+Ref: test_drives.customer_id > customers.id [delete: cascade]
+
+// Many-to-One: TestDrive -> CarModel
+Ref: test_drives.car_model_id > car_models.id [delete: cascade]
+
+// Many-to-One: ServiceAppointment -> Customer
+Ref: service_appointments.customer_id > customers.id [delete: cascade]
+
+

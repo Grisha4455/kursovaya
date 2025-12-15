@@ -1,0 +1,69 @@
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AutoDealer - Главная</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<header>
+    <nav class="navbar">
+        <div class="container">
+            <h1 class="logo">Автодилер</h1>
+            <ul class="nav-menu">
+                <li><a href="/" class="active">Главная</a></li>
+                <li><a href="/catalog">Каталог</a></li>
+                <li><a href="/request">Связаться</a></li>
+                <li th:if="${!isAuthenticated}"><a href="/login">Войти</a></li>
+                <li th:if="${isAuthenticated and isCustomer}"><a href="/customer/dashboard">Мой аккаунт</a></li>
+                <li th:if="${isAuthenticated and !isCustomer}"><a href="/admin/dashboard">Админ-панель</a></li>
+                <li th:if="${isAuthenticated}"><a href="/logout">Выйти</a></li>
+            </ul>
+        </div>
+    </nav>
+</header>
+
+<main>
+    <section class="hero">
+        <div class="container">
+            <h2>Добро пожаловать в Автодилер</h2>
+            <p>Лучшие автомобили по лучшим ценам</p>
+            <a href="/catalog" class="btn btn-primary">Просмотреть каталог</a>
+        </div>
+    </section>
+
+    <section class="featured-cars">
+        <div class="container">
+            <h3>Рекомендуемые модели</h3>
+            <div class="car-grid">
+                <div th:each="car : ${featuredCars}" class="car-card">
+                    <h4 th:text="${car.brand + ' ' + car.name}">Название автомобиля</h4>
+                    <div class="car-details">
+                        <p><strong>Цвет:</strong> <span th:text="${car.color}">Цвет</span></p>
+                        <p><strong>Мощность:</strong> <span th:text="${car.enginePower}">Мощность</span> л.с.</p>
+                        <p><strong>Коробка передач:</strong> <span th:text="${car.transmission}">Коробка передач</span></p>
+                    </div>
+                    <a th:href="@{'/catalog/' + ${car.id}}" class="btn btn-secondary">Подробнее</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="cta">
+        <div class="container">
+            <h3>Хотите купить автомобиль?</h3>
+            <p>Отправьте заявку и наши менеджеры свяжутся с вами</p>
+            <a href="/request" class="btn btn-primary">Отправить заявку</a>
+        </div>
+    </section>
+</main>
+
+<footer>
+    <div class="container">
+        <p>&copy;2025 @lazovskiy </p>
+    </div>
+</footer>
+</body>
+</html>

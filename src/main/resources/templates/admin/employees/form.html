@@ -1,0 +1,97 @@
+
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Сотрудник - AutoDealer</title>
+    <link rel="stylesheet" th:href="@{/css/admin.css}">
+</head>
+<body>
+<div class="admin-container">
+    <aside class="sidebar">
+        <h2>AutoDealer</h2>
+        <nav class="admin-nav">
+            <a th:href="@{/admin/dashboard}">Панель управления</a>
+            <a th:href="@{/admin/cars}">Модели автомобилей</a>
+            <a th:href="@{/admin/suppliers}">Поставщики</a>
+            <a th:href="@{/admin/prices}">Прайс-лист</a>
+            <a th:href="@{/admin/customers}">Клиенты</a>
+            <a th:href="@{/admin/sales}">Продажи</a>
+            <a th:href="@{/admin/employees}" class="active">Сотрудники</a>
+            <a th:href="@{/admin/requests}">Запросы</a>
+            <a th:href="@{/admin/analytics}">Аналитика</a>
+            <a th:href="@{/}">Публичный сайт</a>
+            <a th:href="@{/logout}">Выйти</a>
+        </nav>
+    </aside>
+
+    <main class="main-content">
+        <header class="content-header">
+            <h1 th:text="${employee.id != null ? 'Редактировать сотрудника' : 'Добавить сотрудника'}">Сотрудник</h1>
+            <a href="/admin/employees" class="btn btn-secondary">Назад</a>
+        </header>
+
+        <form th:action="${employee.id != null ? '/admin/employees/' + employee.id + '/update' : '/admin/employees'}"
+              th:object="${employee}" method="post" class="admin-form">
+
+            <div class="form-group">
+                <label for="fullName">Полное имя *</label>
+                <input type="text" id="fullName" th:field="*{fullName}" required>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="username">Имя пользователя *</label>
+                    <input type="text" id="username" th:field="*{username}" required>
+                </div>
+
+                <div class="form-group" th:if="${employee.id == null}">
+                    <label for="password">Пароль *</label>
+                    <input type="password" id="password" th:field="*{password}" required>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" th:field="*{email}">
+                </div>
+
+                <div class="form-group">
+                    <label for="phone">Телефон</label>
+                    <input type="tel" id="phone" th:field="*{phone}">
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="position">Должность</label>
+                    <input type="text" id="position" th:field="*{position}">
+                </div>
+
+                <div class="form-group">
+                    <label for="role">Роль *</label>
+                    <select id="role" th:field="*{role}" required>
+                        <option value="ROLE_EMPLOYEE">Сотрудник</option>
+                        <option value="ROLE_ADMIN">Администратор</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>
+                    <input type="checkbox" th:field="*{active}">
+                    Активен
+                </label>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">Сохранить</button>
+                <a href="/admin/employees" class="btn btn-secondary">Отмена</a>
+            </div>
+        </form>
+    </main>
+</div>
+</body>
+</html>

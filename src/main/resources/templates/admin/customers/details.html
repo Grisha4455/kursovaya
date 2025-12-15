@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Клиент - AutoDealer</title>
+    <link rel="stylesheet" th:href="@{/css/admin.css}">
+</head>
+<body>
+<div class="admin-container">
+    <aside class="sidebar">
+        <h2>AutoDealer</h2>
+        <nav class="admin-nav">
+            <a th:href="@{/admin/dashboard}">Панель управления</a>
+            <a th:href="@{/admin/cars}">Модели автомобилей</a>
+            <a th:href="@{/admin/suppliers}">Поставщики</a>
+            <a th:href="@{/admin/prices}">Прайс-лист</a>
+            <a th:href="@{/admin/customers}" class="active">Клиенты</a>
+            <a th:href="@{/admin/sales}">Продажи</a>
+            <a th:href="@{/admin/employees}">Сотрудники</a>
+            <a th:href="@{/admin/requests}">Запросы</a>
+            <a th:href="@{/admin/analytics}">Аналитика</a>
+            <a th:href="@{/}">Публичный сайт</a>
+            <a th:href="@{/logout}">Выйти</a>
+        </nav>
+    </aside>
+
+    <main class="main-content">
+        <header class="content-header">
+            <h1 th:text="${customer.fullName}">Имя клиента</h1>
+            <a href="/admin/customers" class="btn btn-secondary">Назад</a>
+        </header>
+
+        <div class="details-card">
+            <h3>Информация о клиенте</h3>
+            <table class="details-table">
+                <tr>
+                    <td><strong>ID:</strong></td>
+                    <td th:text="${customer.id}">ID</td>
+                </tr>
+                <tr>
+                    <td><strong>Полное имя:</strong></td>
+                    <td th:text="${customer.fullName}">Имя</td>
+                </tr>
+                <tr>
+                    <td><strong>Телефон:</strong></td>
+                    <td th:text="${customer.phone}">Телефон</td>
+                </tr>
+                <tr>
+                    <td><strong>Email:</strong></td>
+                    <td th:text="${customer.email}">Email</td>
+                </tr>
+                <tr>
+                    <td><strong>Адрес:</strong></td>
+                    <td th:text="${customer.address}">Адрес</td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="details-card">
+            <h3>История покупок</h3>
+            <table class="data-table" th:if="${!#lists.isEmpty(sales)}">
+                <thead>
+                <tr>
+                    <th>Дата</th>
+                    <th>Модель</th>
+                    <th>Сумма</th>
+                    <th>Менеджер</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="sale : ${sales}">
+                    <td th:text="${#temporals.format(sale.saleDate, 'dd.MM.yyyy HH:mm')}">Дата</td>
+                    <td th:text="${sale.carModel.brand + ' ' + sale.carModel.name}">Модель</td>
+                    <td th:text="${#numbers.formatDecimal(sale.finalPrice, 0, 'WHITESPACE', 2, 'COMMA')}">Цена</td>
+                    <td th:text="${sale.employee.fullName}">Сотрудник</td>
+                </tr>
+                </tbody>
+            </table>
+            <p th:if="${#lists.isEmpty(sales)}">Покупок пока нет</p>
+        </div>
+    </main>
+</div>
+</body>
+</html>

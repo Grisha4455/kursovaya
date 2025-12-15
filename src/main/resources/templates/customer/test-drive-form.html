@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Запись на тест-драйв - AutoDealer</title>
+    <link rel="stylesheet" th:href="@{/css/admin.css}">
+</head>
+<body>
+<div class="admin-container">
+    <aside class="sidebar">
+        <h2>AutoDealer</h2>
+        <nav class="admin-nav">
+            <a th:href="@{/customer/dashboard}">Панель управления</a>
+            <a th:href="@{/customer/test-drive}" class="active">Запись на тест-драйв</a>
+            <a th:href="@{/customer/service}">Запись на сервис</a>
+            <a th:href="@{/customer/credit}">Кредитный калькулятор</a>
+            <a th:href="@{/catalog}">Каталог</a>
+            <a th:href="@{/}">Главная</a>
+            <a th:href="@{/logout}">Выйти</a>
+        </nav>
+    </aside>
+
+    <main class="main-content">
+        <header class="content-header">
+            <h1>Запись на тест-драйв</h1>
+            <a th:href="@{/customer/dashboard}" class="btn btn-secondary">Назад</a>
+        </header>
+
+        <form th:action="@{/customer/test-drive}" th:object="${testDrive}" method="post" class="admin-form">
+            <div class="form-group">
+                <label for="carModel">Выберите модель автомобиля *</label>
+                <select id="carModel" th:field="*{carModel}" required>
+                    <option value="">Выберите модель</option>
+                    <option th:each="car : ${cars}"
+                            th:value="${car.id}"
+                            th:text="${car.brand + ' ' + car.name}">Модель</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="testDate">Предпочтительная дата *</label>
+                <input type="date" id="testDate" th:field="*{testDate}" required>
+            </div>
+
+            <div class="form-group">
+                <label for="testTime">Предпочтительное время *</label>
+                <input type="time" id="testTime" th:field="*{testTime}" required>
+            </div>
+
+            <div class="form-group">
+                <label for="comments">Дополнительные комментарии</label>
+                <textarea id="comments" th:field="*{comments}" rows="4"></textarea>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">Отправить заявку</button>
+                <a th:href="@{/customer/dashboard}" class="btn btn-secondary">Отмена</a>
+            </div>
+        </form>
+    </main>
+</div>
+</body>
+</html>

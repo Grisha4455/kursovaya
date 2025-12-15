@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Аналитика - AutoDealer</title>
+    <link rel="stylesheet" th:href="@{/css/admin.css}">
+</head>
+<body>
+<div class="admin-container">
+    <aside class="sidebar">
+        <h2>AutoDealer</h2>
+        <nav class="admin-nav">
+            <a th:href="@{/admin/dashboard}">Панель управления</a>
+            <a th:href="@{/admin/cars}">Модели автомобилей</a>
+            <a th:href="@{/admin/suppliers}">Поставщики</a>
+            <a th:href="@{/admin/prices}">Прайс-лист</a>
+            <a th:href="@{/admin/customers}">Клиенты</a>
+            <a th:href="@{/admin/sales}">Продажи</a>
+            <a th:href="@{/admin/employees}">Сотрудники</a>
+            <a th:href="@{/admin/requests}">Запросы</a>
+            <a th:href="@{/admin/analytics}" class="active">Аналитика</a>
+            <a th:href="@{/}">Публичный сайт</a>
+            <a th:href="@{/logout}">Выйти</a>
+        </nav>
+    </aside>
+
+    <main class="main-content">
+        <header class="content-header">
+            <h1>Аналитика и отчеты</h1>
+        </header>
+
+        <div class="analytics-section">
+            <h2>Популярные модели</h2>
+            <table class="data-table">
+                <thead>
+                <tr>
+                    <th>ID модели</th>
+                    <th>Название модели</th>
+                    <th>Количество продаж</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="model : ${popularModels}">
+                    <td th:text="${model[0]}">ID</td>
+                    <td th:text="${model[1]}">Название</td>
+                    <td class="highlight" th:text="${model[2]}">Количество</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="analytics-section">
+            <h2>Продажи по сотрудникам</h2>
+            <table class="data-table">
+                <thead>
+                <tr>
+                    <th>ID сотрудника</th>
+                    <th>Полное имя</th>
+                    <th>Количество продаж</th>
+                    <th>Общая выручка</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="sale : ${salesByEmployee}">
+                    <td th:text="${sale[0]}">ID</td>
+                    <td th:text="${sale[1]}">Имя</td>
+                    <td th:text="${sale[2]}">Количество</td>
+                    <td class="highlight" th:text="${#numbers.formatDecimal(sale[3], 0, 'WHITESPACE', 2, 'COMMA')}">Выручка</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </main>
+</div>
+</body>
+</html>

@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Service Appointments - AutoDealer</title>
+    <link rel="stylesheet" th:href="@{/css/admin.css}">
+</head>
+<body>
+    <div class="admin-container">
+        <aside class="sidebar">
+            <h2>AutoDealer</h2>
+            <nav class="admin-nav">
+                <a th:href="@{/admin/dashboard}">Dashboard</a>
+                <a th:href="@{/admin/cars}">Car Models</a>
+                <a th:href="@{/admin/suppliers}">Suppliers</a>
+                <a th:href="@{/admin/prices}">Price List</a>
+                <a th:href="@{/admin/customers}">Customers</a>
+                <a th:href="@{/admin/sales}">Sales</a>
+                <a th:href="@{/admin/employees}">Employees</a>
+                <a th:href="@{/admin/requests}">Requests</a>
+                <a th:href="@{/admin/test-drives}">Test Drives</a>
+                <a th:href="@{/admin/service-appointments}" class="active">Service</a>
+                <a th:href="@{/admin/credit-offers}">Credit Offers</a>
+                <a th:href="@{/admin/analytics}">Analytics</a>
+                <a th:href="@{/}">Public Site</a>
+                <a th:href="@{/logout}">Logout</a>
+            </nav>
+        </aside>
+        
+        <main class="main-content">
+            <header class="content-header">
+                <h1>Service Appointments</h1>
+            </header>
+            
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Customer</th>
+                        <th>Car Info</th>
+                        <th>Service Type</th>
+                        <th>Date</th>
+                        <th>Time</th>
+                        <th>Status</th>
+                        <th>Description</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="appt : ${appointments}">
+                        <td th:text="${appt.id}">1</td>
+                        <td th:text="${appt.customer.fullName}">Customer</td>
+                        <td th:text="${appt.carInfo}">Car</td>
+                        <td th:text="${appt.serviceType}">Type</td>
+                        <td th:text="${appt.appointmentDate}">Date</td>
+                        <td th:text="${appt.appointmentTime}">Time</td>
+                        <td>
+                            <form th:action="@{'/admin/service-appointments/' + ${appt.id} + '/status'}" method="post" style="display:inline;">
+                                <select name="status" onchange="this.form.submit()">
+                                    <option th:selected="${appt.status == 'В ожидании'}" value="В ожидании">Pending</option>
+                                    <option th:selected="${appt.status == 'Подтверждено'}" value="Подтверждено">Confirmed</option>
+                                    <option th:selected="${appt.status == 'Завершено'}" value="Завершено">Completed</option>
+                                    <option th:selected="${appt.status == 'Отменено'}" value="Отменено">Cancelled</option>
+                                </select>
+                            </form>
+                        </td>
+                        <td th:text="${appt.description}">-</td>
+                        <td class="actions">
+                            <form th:action="@{'/admin/service-appointments/' + ${appt.id} + '/delete'}" method="post" style="display:inline;">
+                                <button type="submit" class="btn-action btn-delete" onclick="return confirm('Delete this appointment?')">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </main>
+    </div>
+</body>
+</html>
+

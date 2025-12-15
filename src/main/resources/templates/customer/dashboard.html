@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Личный кабинет - AutoDealer</title>
+    <link rel="stylesheet" th:href="@{/css/admin.css}">
+</head>
+<body>
+<div class="admin-container">
+    <aside class="sidebar">
+        <h2>AutoDealer</h2>
+        <nav class="admin-nav">
+            <a th:href="@{/customer/dashboard}" class="active">Панель управления</a>
+            <a th:href="@{/customer/test-drive}">Запись на тест-драйв</a>
+            <a th:href="@{/customer/service}">Запись на сервис</a>
+            <a th:href="@{/customer/credit}">Кредитный калькулятор</a>
+            <a th:href="@{/catalog}">Каталог</a>
+            <a th:href="@{/}">Главная</a>
+            <a th:href="@{/logout}">Выйти</a>
+        </nav>
+    </aside>
+
+    <main class="main-content">
+        <header class="content-header">
+            <h1>Добро пожаловать, <span th:text="${customer.fullName}">Клиент</span>!</h1>
+        </header>
+
+        <div th:if="${param.success == 'testdrive'}" class="success-message">
+            Тест-драйв успешно забронирован!
+        </div>
+
+        <div th:if="${param.success == 'service'}" class="success-message">
+            Запись на сервис успешно создана!
+        </div>
+
+        <section style="margin-bottom: 30px;">
+            <h2>Быстрые действия</h2>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px;">
+                <a th:href="@{/customer/test-drive}" class="btn btn-primary" style="padding: 20px; text-align: center;">
+                    Запись на тест-драйв
+                </a>
+                <a th:href="@{/customer/service}" class="btn btn-primary" style="padding: 20px; text-align: center;">
+                    Запись на сервис
+                </a>
+                <a th:href="@{/customer/credit}" class="btn btn-primary" style="padding: 20px; text-align: center;">
+                    Кредитный калькулятор
+                </a>
+            </div>
+        </section>
+
+        <section style="margin-bottom: 30px;">
+            <h2>Мои тест-драйвы</h2>
+            <table class="data-table">
+                <thead>
+                <tr>
+                    <th>Модель автомобиля</th>
+                    <th>Дата</th>
+                    <th>Время</th>
+                    <th>Статус</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="td : ${testDrives}">
+                    <td th:text="${td.carModel.brand + ' ' + td.carModel.name}">Модель</td>
+                    <td th:text="${td.testDate}">Дата</td>
+                    <td th:text="${td.testTime}">Время</td>
+                    <td><span th:text="${td.status}" class="badge"></span></td>
+                </tr>
+                <tr th:if="${#lists.isEmpty(testDrives)}">
+                    <td colspan="4" style="text-align: center;">Нет забронированных тест-драйвов</td>
+                </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section>
+            <h2>Мои записи на сервис</h2>
+            <table class="data-table">
+                <thead>
+                <tr>
+                    <th>Информация об авто</th>
+                    <th>Тип услуги</th>
+                    <th>Дата</th>
+                    <th>Время</th>
+                    <th>Статус</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="appt : ${appointments}">
+                    <td th:text="${appt.carInfo}">Автомобиль</td>
+                    <td th:text="${appt.serviceType}">Тип</td>
+                    <td th:text="${appt.appointmentDate}">Дата</td>
+                    <td th:text="${appt.appointmentTime}">Время</td>
+                    <td><span th:text="${appt.status}" class="badge"></span></td>
+                </tr>
+                <tr th:if="${#lists.isEmpty(appointments)}">
+                    <td colspan="5" style="text-align: center;">Нет записей на сервис</td>
+                </tr>
+                </tbody>
+            </table>
+        </section>
+    </main>
+</div>
+</body>
+</html>

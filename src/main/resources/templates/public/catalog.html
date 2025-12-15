@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Каталог - AutoDealer</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<header>
+    <nav class="navbar">
+        <div class="container">
+            <h1 class="logo">AutoDealer</h1>
+            <ul class="nav-menu">
+                <li><a href="/">Главная</a></li>
+                <li><a href="/catalog" class="active">Каталог</a></li>
+                <li><a href="/request">Связаться</a></li>
+                <li th:if="${!isAuthenticated}"><a href="/login">Войти</a></li>
+                <li th:if="${isAuthenticated and isCustomer}"><a href="/customer/dashboard">Мой аккаунт</a></li>
+                <li th:if="${isAuthenticated and !isCustomer}"><a href="/admin/dashboard">Админ</a></li>
+                <li th:if="${isAuthenticated}"><a href="/logout">Выйти</a></li>
+            </ul>
+        </div>
+    </nav>
+</header>
+
+<main>
+    <div class="container">
+        <h2>Каталог автомобилей</h2>
+
+        <div class="filters">
+            <h3>Фильтры</h3>
+            <form method="get" action="/catalog">
+                <div class="filter-group">
+                    <label>Марка:</label>
+                    <select name="brand">
+                        <option value="">Все</option>
+                        <option value="Toyota">Toyota</option>
+                        <option value="BMW">BMW</option>
+                        <option value="Mercedes-Benz">Mercedes-Benz</option>
+                        <option value="Audi">Audi</option>
+                        <option value="Volkswagen">Volkswagen</option>
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label>Цвет:</label>
+                    <select name="color">
+                        <option value="">Все</option>
+                        <option value="Black">Черный</option>
+                        <option value="Blue">Синий</option>
+                        <option value="Gray">Серый</option>
+                        <option value="Silver">Серебристый</option>
+                        <option value="Red">Красный</option>
+                        <option value="Green">Зеленый</option>
+                        <option value="Yellow">Желтый</option>
+                        <option value="Orange">Оранжевый</option>
+                        <option value="Brown">Коричневый</option>
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label>Коробка передач:</label>
+                    <select name="transmission">
+                        <option value="">Все</option>
+                        <option value="Automatic">Автоматическая</option>
+                        <option value="Manual">Механическая</option>
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label>Двери:</label>
+                    <select name="doors">
+                        <option value="">Все</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label>Мощность от:</label>
+                    <input type="number" name="minPower" placeholder="л.с.">
+                </div>
+
+                <div class="filter-group">
+                    <label>Мощность до:</label>
+                    <input type="number" name="maxPower" placeholder="л.с.">
+                </div>
+
+                <button type="submit" class="btn btn-primary">Применить</button>
+            </form>
+        </div>
+
+        <div class="car-grid">
+            <div th:each="car : ${cars}" class="car-card">
+                <h4 th:text="${car.brand + ' ' + car.name}">Название автомобиля</h4>
+                <div class="car-details">
+                    <p><strong>Цвет:</strong> <span th:text="${car.color}">Цвет</span></p>
+                    <p><strong>Обивка салона:</strong> <span th:text="${car.upholstery}">Обивка</span></p>
+                    <p><strong>Двигатель:</strong> <span th:text="${car.engineType}">Двигатель</span></p>
+                    <p><strong>Мощность:</strong> <span th:text="${car.enginePower}">Мощность</span> л.с.</p>
+                    <p><strong>Коробка передач:</strong> <span th:text="${car.transmission}">Коробка передач</span></p>
+                    <p><strong>Двери:</strong> <span th:text="${car.doors}">Двери</span></p>
+                </div>
+                <a th:href="@{'/catalog/' + ${car.id}}" class="btn btn-secondary">Подробнее</a>
+            </div>
+        </div>
+
+        <div th:if="${#lists.isEmpty(cars)}" class="no-results">
+            <p>Результаты не найдены</p>
+        </div>
+    </div>
+</main>
+
+<footer>
+    <div class="container">
+        <p>&copy;2025 @lazovskiy</p>
+    </div>
+</footer>
+</body>
+</html>

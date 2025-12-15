@@ -1,0 +1,76 @@
+
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Цена - AutoDealer</title>
+    <link rel="stylesheet" th:href="@{/css/admin.css}">
+</head>
+<body>
+<div class="admin-container">
+    <aside class="sidebar">
+        <h2>AutoDealer</h2>
+        <nav class="admin-nav">
+            <a data-th-href="@{/admin/dashboard}">Панель управления</a>
+            <a data-th-href="@{/admin/cars}">Модели автомобилей</a>
+            <a data-th-href="@{/admin/suppliers}">Поставщики</a>
+            <a data-th-href="@{/admin/prices}" class="active">Прайс-лист</a>
+            <a data-th-href="@{/admin/customers}">Клиенты</a>
+            <a data-th-href="@{/admin/sales}">Продажи</a>
+            <a data-th-href="@{/admin/employees}">Сотрудники</a>
+            <a data-th-href="@{/admin/requests}">Запросы</a>
+            <a data-th-href="@{/admin/analytics}">Аналитика</a>
+            <a data-th-href="@{/}">Публичный сайт</a>
+            <a data-th-href="@{/logout}">Выйти</a>
+        </nav>
+    </aside>
+
+    <main class="main-content">
+        <header class="content-header">
+            <h1 data-th-text="${price.id != null ? 'Редактировать цену' : 'Добавить цену'}">Цена</h1>
+            <a data-th-href="@{/admin/prices}" class="btn btn-secondary">Назад</a>
+        </header>
+
+        <form data-th-action="@{${price.id != null ? '/admin/prices/' + price.id + '/update' : '/admin/prices'}}"
+              data-th-object="${price}" method="post" class="admin-form">
+
+            <div class="form-group">
+                <label for="carModel">Модель автомобиля *</label>
+                <select id="carModel" data-th-field="*{carModel}" required>
+                    <option value="">Выберите модель</option>
+                    <option data-th-each="car : ${cars}"
+                            data-th-value="${car.id}"
+                            data-th-text="${car.brand + ' ' + car.name}">Автомобиль</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="productionYear">Год выпуска *</label>
+                <input type="number" id="productionYear" data-th-field="*{productionYear}" required>
+            </div>
+
+            <div class="form-group">
+                <label for="basePrice">Базовая цена *</label>
+                <input type="number" step="0.01" id="basePrice" data-th-field="*{basePrice}" required>
+            </div>
+
+            <div class="form-group">
+                <label for="preSalePreparation">Предпродажная подготовка</label>
+                <input type="number" step="0.01" id="preSalePreparation" data-th-field="*{preSalePreparation}">
+            </div>
+
+            <div class="form-group">
+                <label for="transportCosts">Транспортные расходы</label>
+                <input type="number" step="0.01" id="transportCosts" data-th-field="*{transportCosts}">
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">Сохранить</button>
+                <a data-th-href="@{/admin/prices}" class="btn btn-secondary">Отмена</a>
+            </div>
+        </form>
+    </main>
+</div>
+</body>
+</html>

@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Кредитный калькулятор - AutoDealer</title>
+    <link rel="stylesheet" th:href="@{/css/admin.css}">
+    <style>
+        .calculator-container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        .result-box {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+            text-align: center;
+        }
+        .result-box h3 {
+            margin: 0 0 10px 0;
+            color: #333;
+        }
+        .monthly-payment {
+            font-size: 2em;
+            font-weight: bold;
+            color: #007bff;
+        }
+        .offers-section {
+            margin-bottom: 30px;
+        }
+        .offer-card {
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+<div class="admin-container">
+    <aside class="sidebar">
+        <h2>AutoDealer</h2>
+        <nav class="admin-nav">
+            <a th:href="@{/customer/dashboard}">Панель управления</a>
+            <a th:href="@{/customer/test-drive}">Запись на тест-драйв</a>
+            <a th:href="@{/customer/service}">Запись на сервис</a>
+            <a th:href="@{/customer/credit}" class="active">Кредитный калькулятор</a>
+            <a th:href="@{/catalog}">Каталог</a>
+            <a th:href="@{/}">Главная</a>
+            <a th:href="@{/logout}">Выйти</a>
+        </nav>
+    </aside>
+
+    <main class="main-content">
+        <header class="content-header">
+            <h1>Автокредитный калькулятор</h1>
+            <a th:href="@{/customer/dashboard}" class="btn btn-secondary">Назад</a>
+        </header>
+
+        <div class="calculator-container">
+            <div class="offers-section">
+                <h2>Доступные кредитные предложения</h2>
+                <div th:each="offer : ${offers}" class="offer-card">
+                    <h3 th:text="${offer.name}">Название предложения</h3>
+                    <p><strong>Ставка:</strong> <span th:text="${offer.minRate}">0</span>% - <span th:text="${offer.maxRate}">0</span>%</p>
+                    <p><strong>Срок:</strong> <span th:text="${offer.minTermMonths}">0</span> - <span th:text="${offer.maxTermMonths}">0</span> месяцев</p>
+                    <p><strong>Мин. первоначальный взнос:</strong> <span th:text="${offer.minDownPaymentPercent}">0</span>%</p>
+                    <p th:if="${offer.description}" th:text="${offer.description}">Описание</p>
+                </div>
+            </div>
+
+            <h2>Рассчитайте ежемесячный платеж</h2>
+
+            <form id="calculatorForm" class="admin-form">
+                <div class="form-group">
+                    <label for="price">Стоимость автомобиля ($) *</label>
+                    <input type="number" id="price" step="0.01" min="0" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="downPayment">Первоначальный взнос ($) *</label>
+                    <input type="number" id="downPayment" step="0.01" min="0" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="rate">Годовая процентная ставка (%) *</label>
+                    <input type="number" id="rate" step="0.01" min="0" max="100" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="months">Срок кредита (месяцев) *</label>
+                    <input type="number" id="months" min="1" max="360" required>
+                </div>
+
+                <button type="submit" class="btn btn-primary">Рассчитать</button>
+            </form>
+
+            <div id="result" class="result-box" style="display: none;">
+                <h3>Ваш ежемесячный платеж</h3>
+                <div class="monthly-payment" id="monthlyPayment">$0.00</div>
+                <p style="margin-top: 10px; color: #666;">
+                    Сумма кредита: $<span id="loanAmount">0</span><br>
+                    Общая сумма выплат: $<span id="totalPayment">0</span><br>
+                    Общие проценты: $<span id="totalInterest">0</span>
+                </p>
+            </div>
+        </div>
+    </main>
+</div>
+
+<script>
+    document.getElementById('calculatorForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+
+        const price = parseFloat(document.getElementById('price').value);
+        const downPayment = parseFloat(document.getElementById('downPayment').value);
+        const rate = parseFloat(document.getElementById('rate').value);
+        const months = parseInt(document.getElementById('months').value);
+
+        const response = await fetch('/customer/credit/calculate', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: `price=${price}&downPayment=${downPayment}&rate=${rate}&months=${months}`
+        });
+
+        const monthlyPayment = await response.text();
+        const loanAmount = price - downPayment;
+        const totalPayment = parseFloat(monthlyPayment) * months;
+        const totalInterest = totalPayment - loanAmount;
+
+        document.getElementById('monthlyPayment').textContent = '$' + parseFloat(monthlyPayment).toFixed(2);
+        document.getElementById('loanAmount').textContent = loanAmount.toFixed(2);
+        document.getElementById('totalPayment').textContent = totalPayment.toFixed(2);
+        document.getElementById('totalInterest').textContent = totalInterest.toFixed(2);
+        document.getElementById('result').style.display = 'block';
+    });
+</script>
+</body>
+</html>

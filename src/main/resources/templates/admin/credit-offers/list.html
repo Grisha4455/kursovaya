@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Credit Offers - AutoDealer</title>
+    <link rel="stylesheet" th:href="@{/css/admin.css}">
+</head>
+<body>
+    <div class="admin-container">
+        <aside class="sidebar">
+            <h2>AutoDealer</h2>
+            <nav class="admin-nav">
+                <a th:href="@{/admin/dashboard}">Dashboard</a>
+                <a th:href="@{/admin/cars}">Car Models</a>
+                <a th:href="@{/admin/suppliers}">Suppliers</a>
+                <a th:href="@{/admin/prices}">Price List</a>
+                <a th:href="@{/admin/customers}">Customers</a>
+                <a th:href="@{/admin/sales}">Sales</a>
+                <a th:href="@{/admin/employees}">Employees</a>
+                <a th:href="@{/admin/requests}">Requests</a>
+                <a th:href="@{/admin/test-drives}">Test Drives</a>
+                <a th:href="@{/admin/service-appointments}">Service</a>
+                <a th:href="@{/admin/credit-offers}" class="active">Credit Offers</a>
+                <a th:href="@{/admin/analytics}">Analytics</a>
+                <a th:href="@{/}">Public Site</a>
+                <a th:href="@{/logout}">Logout</a>
+            </nav>
+        </aside>
+        
+        <main class="main-content">
+            <header class="content-header">
+                <h1>Credit Offers</h1>
+                <a th:href="@{/admin/credit-offers/new}" class="btn btn-primary">Add Offer</a>
+            </header>
+            
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Rate (%)</th>
+                        <th>Term (months)</th>
+                        <th>Min Down Payment (%)</th>
+                        <th>Active</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="offer : ${offers}">
+                        <td th:text="${offer.id}">1</td>
+                        <td th:text="${offer.name}">Offer Name</td>
+                        <td th:text="${offer.minRate + '% - ' + offer.maxRate + '%'}">Rate</td>
+                        <td th:text="${offer.minTermMonths + ' - ' + offer.maxTermMonths}">Term</td>
+                        <td th:text="${offer.minDownPaymentPercent + '%'}">Down</td>
+                        <td th:text="${offer.active ? 'Yes' : 'No'}">Active</td>
+                        <td class="actions">
+                            <a th:href="@{'/admin/credit-offers/' + ${offer.id} + '/edit'}" class="btn-action btn-edit">Edit</a>
+                            <form th:action="@{'/admin/credit-offers/' + ${offer.id} + '/delete'}" method="post" style="display:inline;">
+                                <button type="submit" class="btn-action btn-delete" onclick="return confirm('Delete?')">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </main>
+    </div>
+</body>
+</html>
+

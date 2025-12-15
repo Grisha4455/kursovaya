@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Drives - AutoDealer</title>
+    <link rel="stylesheet" th:href="@{/css/admin.css}">
+</head>
+<body>
+    <div class="admin-container">
+        <aside class="sidebar">
+            <h2>AutoDealer</h2>
+            <nav class="admin-nav">
+                <a th:href="@{/admin/dashboard}">Dashboard</a>
+                <a th:href="@{/admin/cars}">Car Models</a>
+                <a th:href="@{/admin/suppliers}">Suppliers</a>
+                <a th:href="@{/admin/prices}">Price List</a>
+                <a th:href="@{/admin/customers}">Customers</a>
+                <a th:href="@{/admin/sales}">Sales</a>
+                <a th:href="@{/admin/employees}">Employees</a>
+                <a th:href="@{/admin/requests}">Requests</a>
+                <a th:href="@{/admin/test-drives}" class="active">Test Drives</a>
+                <a th:href="@{/admin/service-appointments}">Service</a>
+                <a th:href="@{/admin/credit-offers}">Credit Offers</a>
+                <a th:href="@{/admin/analytics}">Analytics</a>
+                <a th:href="@{/}">Public Site</a>
+                <a th:href="@{/logout}">Logout</a>
+            </nav>
+        </aside>
+        
+        <main class="main-content">
+            <header class="content-header">
+                <h1>Test Drive Bookings</h1>
+            </header>
+            
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Customer</th>
+                        <th>Car Model</th>
+                        <th>Date</th>
+                        <th>Time</th>
+                        <th>Status</th>
+                        <th>Comments</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="td : ${testDrives}">
+                        <td th:text="${td.id}">1</td>
+                        <td th:text="${td.customer.fullName}">Customer</td>
+                        <td th:text="${td.carModel.brand + ' ' + td.carModel.name}">Model</td>
+                        <td th:text="${td.testDate}">Date</td>
+                        <td th:text="${td.testTime}">Time</td>
+                        <td>
+                            <form th:action="@{'/admin/test-drives/' + ${td.id} + '/status'}" method="post" style="display:inline;">
+                                <select name="status" onchange="this.form.submit()">
+                                    <option th:selected="${td.status == 'В ожидании'}" value="В ожидании">Pending</option>
+                                    <option th:selected="${td.status == 'Подтверждено'}" value="Подтверждено">Confirmed</option>
+                                    <option th:selected="${td.status == 'Завершено'}" value="Завершено">Completed</option>
+                                    <option th:selected="${td.status == 'Отменено'}" value="Отменено">Cancelled</option>
+                                </select>
+                            </form>
+                        </td>
+                        <td th:text="${td.comments}">-</td>
+                        <td class="actions">
+                            <form th:action="@{'/admin/test-drives/' + ${td.id} + '/delete'}" method="post" style="display:inline;">
+                                <button type="submit" class="btn-action btn-delete" onclick="return confirm('Delete this booking?')">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </main>
+    </div>
+</body>
+</html>
+

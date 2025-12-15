@@ -1,0 +1,95 @@
+
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Новая продажа - AutoDealer</title>
+    <link rel="stylesheet" th:href="@{/css/admin.css}">
+</head>
+<body>
+<div class="admin-container">
+    <aside class="sidebar">
+        <h2>AutoDealer</h2>
+        <nav class="admin-nav">
+            <a th:href="@{/admin/dashboard}">Панель управления</a>
+            <a th:href="@{/admin/cars}">Модели автомобилей</a>
+            <a th:href="@{/admin/suppliers}">Поставщики</a>
+            <a th:href="@{/admin/prices}">Прайс-лист</a>
+            <a th:href="@{/admin/customers}">Клиенты</a>
+            <a th:href="@{/admin/sales}" class="active">Продажи</a>
+            <a th:href="@{/admin/employees}">Сотрудники</a>
+            <a th:href="@{/admin/requests}">Запросы</a>
+            <a th:href="@{/admin/analytics}">Аналитика</a>
+            <a th:href="@{/}">Публичный сайт</a>
+            <a th:href="@{/logout}">Выйти</a>
+        </nav>
+    </aside>
+
+    <main class="main-content">
+        <header class="content-header">
+            <h1>Новая продажа</h1>
+            <a href="/admin/sales" class="btn btn-secondary">Назад</a>
+        </header>
+
+        <form th:action="@{/admin/sales}" th:object="${sale}" method="post" class="admin-form">
+            <div class="form-group">
+                <label for="customer">Клиент *</label>
+                <select id="customer" th:field="*{customer}" required>
+                    <option value="">Выберите клиента</option>
+                    <option th:each="customer : ${customers}"
+                            th:value="${customer.id}"
+                            th:text="${customer.fullName + ' (' + customer.phone + ')'}">Клиент</option>
+                </select>
+                <a href="/admin/customers/new" class="form-hint">+ Добавить нового клиента</a>
+            </div>
+
+            <div class="form-group">
+                <label for="carModel">Модель автомобиля *</label>
+                <select id="carModel" th:field="*{carModel}" required>
+                    <option value="">Выберите модель</option>
+                    <option th:each="car : ${cars}"
+                            th:value="${car.id}"
+                            th:text="${car.brand + ' ' + car.name}">Автомобиль</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="priceList">Прайс-лист *</label>
+                <select id="priceList" th:field="*{priceList}" required>
+                    <option value="">Выберите цену</option>
+                    <option th:each="price : ${prices}"
+                            th:value="${price.id}"
+                            th:text="${price.carModel.brand + ' ' + price.carModel.name + ' (' + price.productionYear + ') - ' + #numbers.formatDecimal(price.finalPrice, 0, 'WHITESPACE', 2, 'COMMA')}">Цена</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="finalPrice">Итоговая цена *</label>
+                <input type="number" step="0.01" id="finalPrice" th:field="*{finalPrice}" required>
+            </div>
+
+            <div class="form-group">
+                <label for="employee">Менеджер *</label>
+                <select id="employee" th:field="*{employee}" required>
+                    <option value="">Выберите менеджера</option>
+                    <option th:each="emp : ${employees}"
+                            th:value="${emp.id}"
+                            th:text="${emp.fullName}">Сотрудник</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="notes">Примечания</label>
+                <textarea id="notes" th:field="*{notes}" rows="4"></textarea>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">Сохранить продажу</button>
+                <a href="/admin/sales" class="btn btn-secondary">Отмена</a>
+            </div>
+        </form>
+    </main>
+</div>
+</body>
+</html>

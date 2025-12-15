@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Отправить запрос - AutoDealer</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<header>
+    <nav class="navbar">
+        <div class="container">
+            <h1 class="logo">AutoDealer</h1>
+            <ul class="nav-menu">
+                <li><a href="/">Главная</a></li>
+                <li><a href="/catalog">Каталог</a></li>
+                <li><a href="/request" class="active">Заявка</a></li>
+                <li><a href="/login">Войти</a></li>
+            </ul>
+        </div>
+    </nav>
+</header>
+
+<main>
+    <div class="container">
+        <h2>Отправить заявку</h2>
+        <p>Заполните форму и наши менеджеры свяжутся с вами в ближайшее время</p>
+
+        <form th:action="@{/request}" th:object="${request}" method="post" class="request-form">
+            <div class="form-group">
+                <label for="customerName">Ваше имя *</label>
+                <input type="text" id="customerName" th:field="*{customerName}" required>
+            </div>
+
+            <div class="form-group">
+                <label for="phone">Телефон *</label>
+                <input type="tel" id="phone" th:field="*{phone}" required>
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" th:field="*{email}">
+            </div>
+
+            <div class="form-group">
+                <label for="carModel">Интересующая модель (необязательно)</label>
+                <select id="carModel" th:field="*{carModel}">
+                    <option value="">Не выбрано</option>
+                    <option th:each="car : ${cars}"
+                            th:value="${car.id}"
+                            th:text="${car.brand + ' ' + car.name}">Автомобиль</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="message">Сообщение *</label>
+                <textarea id="message" th:field="*{message}" rows="5" required></textarea>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Отправить заявку</button>
+        </form>
+    </div>
+</main>
+
+<footer>
+    <div class="container">
+        <p>&copy; 2025 @lazovskiy</p>
+    </div>
+</footer>
+</body>
+</html>

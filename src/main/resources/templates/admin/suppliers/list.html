@@ -1,0 +1,65 @@
+
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Поставщики - AutoDealer</title>
+    <link rel="stylesheet" th:href="@{/css/admin.css}">
+</head>
+<body>
+<div class="admin-container">
+    <aside class="sidebar">
+        <h2>AutoDealer</h2>
+        <nav class="admin-nav">
+            <a th:href="@{/admin/dashboard}">Панель управления</a>
+            <a th:href="@{/admin/cars}">Модели автомобилей</a>
+            <a th:href="@{/admin/suppliers}" class="active">Поставщики</a>
+            <a th:href="@{/admin/prices}">Прайс-лист</a>
+            <a th:href="@{/admin/customers}">Клиенты</a>
+            <a th:href="@{/admin/sales}">Продажи</a>
+            <a th:href="@{/admin/employees}">Сотрудники</a>
+            <a th:href="@{/admin/requests}">Запросы</a>
+            <a th:href="@{/admin/analytics}">Аналитика</a>
+            <a th:href="@{/}">Публичный сайт</a>
+            <a th:href="@{/logout}">Выйти</a>
+        </nav>
+    </aside>
+
+    <main class="main-content">
+        <header class="content-header">
+            <h1>Поставщики</h1>
+            <a href="/admin/suppliers/new" class="btn btn-primary">Добавить поставщика</a>
+        </header>
+
+        <table class="data-table">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Название</th>
+                <th>Контактное лицо</th>
+                <th>Телефон</th>
+                <th>Email</th>
+                <th>Действия</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="supplier : ${suppliers}">
+                <td th:text="${supplier.id}">1</td>
+                <td th:text="${supplier.name}">Название</td>
+                <td th:text="${supplier.contactPerson}">Лицо</td>
+                <td th:text="${supplier.phone}">Телефон</td>
+                <td th:text="${supplier.email}">Email</td>
+                <td class="actions">
+                    <a th:href="@{'/admin/suppliers/' + ${supplier.id} + '/edit'}" class="btn-action btn-edit">Редактировать</a>
+                    <form th:action="@{'/admin/suppliers/' + ${supplier.id} + '/delete'}" method="post" style="display:inline;">
+                        <button type="submit" class="btn-action btn-delete" onclick="return confirm('Удалить поставщика?')">Удалить</button>
+                    </form>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </main>
+</div>
+</body>
+</html>

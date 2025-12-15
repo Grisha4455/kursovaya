@@ -1,0 +1,125 @@
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${car.brand + ' ' + car.name}">Автомобиль - AutoDealer</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<header>
+    <nav class="navbar">
+        <div class="container">
+            <h1 class="logo">AutoDealer</h1>
+            <ul class="nav-menu">
+                <li><a href="/">Главная</a></li>
+                <li><a href="/catalog">Каталог</a></li>
+                <li><a href="/request">Запрос</a></li>
+                <li><a href="/login">Войти</a></li>
+            </ul>
+        </div>
+    </nav>
+</header>
+
+<main>
+    <div class="container">
+        <a href="/catalog" class="back-link">? Назад в каталог</a>
+
+        <div class="car-details-page">
+            <h2 th:text="${car.brand + ' ' + car.name}">Название автомобиля</h2>
+
+            <div class="details-section">
+                <h3>Характеристики</h3>
+                <table class="details-table">
+                    <tr>
+                        <td><strong>Марка:</strong></td>
+                        <td th:text="${car.brand}">Марка</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Модель:</strong></td>
+                        <td th:text="${car.name}">Модель</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Цвет:</strong></td>
+                        <td th:text="${car.color}">Цвет</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Обивка салона:</strong></td>
+                        <td th:text="${car.upholstery}">Обивка</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Тип двигателя:</strong></td>
+                        <td th:text="${car.engineType}">Тип двигателя</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Мощность двигателя:</strong></td>
+                        <td><span th:text="${car.enginePower}">Мощность</span> л.с.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Коробка передач:</strong></td>
+                        <td th:text="${car.transmission}">Коробка передач</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Количество дверей:</strong></td>
+                        <td th:text="${car.doors}">Двери</td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="details-section" th:if="${car.description}">
+                <h3>Описание</h3>
+                <p th:text="${car.description}">Описание</p>
+            </div>
+
+            <div class="details-section">
+                <h3>Прайс-лист</h3>
+                <table class="price-table">
+                    <thead>
+                    <tr>
+                        <th>Год</th>
+                        <th>Базовая цена</th>
+                        <th>Предпродажная подготовка</th>
+                        <th>Транспорт</th>
+                        <th>Итоговая цена</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="price : ${prices}">
+                        <td th:text="${price.productionYear}">Год</td>
+                        <td th:text="${#numbers.formatDecimal(price.basePrice, 0, 'WHITESPACE', 2, 'COMMA')}">Цена</td>
+                        <td th:text="${#numbers.formatDecimal(price.preSalePreparation, 0, 'WHITESPACE', 2, 'COMMA')}">Подготовка</td>
+                        <td th:text="${#numbers.formatDecimal(price.transportCosts, 0, 'WHITESPACE', 2, 'COMMA')}">Транспорт</td>
+                        <td class="final-price" th:text="${#numbers.formatDecimal(price.finalPrice, 0, 'WHITESPACE', 2, 'COMMA')}">Итоговая</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="details-section">
+                <h3>Поставщики</h3>
+                <div th:if="${!#lists.isEmpty(car.suppliers)}">
+                    <div th:each="supplier : ${car.suppliers}" class="supplier-item">
+                        <h4 th:text="${supplier.name}">Название поставщика</h4>
+                        <p><strong>Контактное лицо:</strong> <span th:text="${supplier.contactPerson}">Лицо</span></p>
+                        <p><strong>Телефон:</strong> <span th:text="${supplier.phone}">Телефон</span></p>
+                        <p><strong>Email:</strong> <span th:text="${supplier.email}">Email</span></p>
+                    </div>
+                </div>
+                <p th:if="${#lists.isEmpty(car.suppliers)}">Информация о поставщиках отсутствует</p>
+            </div>
+
+            <div class="cta-section">
+                <a href="/request" class="btn btn-primary">Запросить этот автомобиль</a>
+            </div>
+        </div>
+    </div>
+</main>
+
+<footer>
+    <div class="container">
+        <p>&copy; 2025 @lazovskiy</p>
+    </div>
+</footer>
+</body>
+</html>

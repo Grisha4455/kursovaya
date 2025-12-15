@@ -1,0 +1,241 @@
+===============================================
+СУЩНОСТИ БАЗЫ ДАННЫХ AUTODEALER
+===============================================
+
+1. CARMODEL (Модели автомобилей)
+   Таблица: car_models
+   
+   Атрибуты:
+   - id (Long) - Идентификатор [PK, AUTO_INCREMENT]
+   - name (String, 100) - Название модели [NOT NULL]
+   - brand (String, 50) - Марка [NOT NULL]
+   - color (String, 50) - Цвет
+   - upholstery (String, 50) - Обивка салона
+   - engineType (String, 50) - Тип двигателя
+   - enginePower (Integer) - Мощность двигателя (л.с.)
+   - transmission (String, 50) - Коробка передач
+   - doors (Integer) - Количество дверей
+   - description (Text) - Описание
+   - suppliers (Set<Supplier>) - Поставщики [Many-to-Many через car_model_suppliers]
+   - createdAt (LocalDateTime) - Дата создания
+
+===============================================
+
+2. SUPPLIER (Поставщики)
+   Таблица: suppliers
+   
+   Атрибуты:
+   - id (Long) - Идентификатор [PK, AUTO_INCREMENT]
+   - name (String, 100) - Название фирмы [NOT NULL]
+   - contactPerson (String, 100) - Контактное лицо
+   - email (String, 100) - Email
+   - phone (String, 20) - Телефон
+   - address (String, 255) - Адрес
+   - createdAt (LocalDateTime) - Дата создания
+
+===============================================
+
+3. PRICELIST (Прейскурант цен)
+   Таблица: price_list
+   
+   Атрибуты:
+   - id (Long) - Идентификатор [PK, AUTO_INCREMENT]
+   - carModel (CarModel) - Модель автомобиля [FK ? car_models, NOT NULL]
+   - productionYear (Integer) - Год выпуска [NOT NULL]
+   - basePrice (BigDecimal 12,2) - Базовая цена [NOT NULL]
+   - preSalePreparation (BigDecimal 12,2) - Предпродажная подготовка
+   - transportCosts (BigDecimal 12,2) - Транспортные расходы
+   - finalPrice (BigDecimal 12,2) - Итоговая цена [GENERATED, NOT UPDATABLE]
+   - createdAt (LocalDateTime) - Дата создания
+
+   Примечание: finalPrice = basePrice + preSalePreparation + transportCosts
+
+===============================================
+
+4. CUSTOMER (Клиенты)
+   Таблица: customers
+   
+   Атрибуты:
+   - id (Long) - Идентификатор [PK, AUTO_INCREMENT]
+   - username (String, 50) - Имя пользователя [UNIQUE]
+   - password (String, 255) - Пароль
+   - fullName (String, 100) - ФИО [NOT NULL]
+   - email (String, 100) - Email
+   - phone (String, 50) - Телефон [NOT NULL]
+   - address (String, 255) - Адрес
+   - active (Boolean) - Активен [NOT NULL, DEFAULT true]
+   - createdAt (LocalDateTime) - Дата регистрации
+
+===============================================
+
+5. EMPLOYEE (Сотрудники)
+   Таблица: employees
+   
+   Атрибуты:
+   - id (Long) - Идентификатор [PK, AUTO_INCREMENT]
+   - username (String, 50) - Имя пользователя [UNIQUE, NOT NULL]
+   - password (String, 255) - Пароль [NOT NULL]
+   - fullName (String, 100) - ФИО [NOT NULL]
+   - email (String, 100) - Email
+   - phone (String, 20) - Телефон
+   - position (String, 50) - Должность
+   - role (String, 20) - Роль [NOT NULL, DEFAULT 'ROLE_EMPLOYEE']
+   - active (Boolean) - Активен [NOT NULL, DEFAULT true]
+   - createdAt (LocalDateTime) - Дата создания
+
+   Примечание: role может быть 'ROLE_ADMIN' или 'ROLE_EMPLOYEE'
+
+===============================================
+
+6. SALE (Продажи)
+   Таблица: sales
+   
+   Атрибуты:
+   - id (Long) - Идентификатор [PK, AUTO_INCREMENT]
+   - customer (Customer) - Клиент [FK ? customers, NOT NULL]
+   - carModel (CarModel) - Модель автомобиля [FK ? car_models, NOT NULL]
+   - employee (Employee) - Сотрудник [FK ? employees, NOT NULL]
+   - priceList (PriceList) - Прейскурант [FK ? price_list, NOT NULL]
+   - finalPrice (BigDecimal 12,2) - Итоговая цена [NOT NULL]
+   - saleDate (LocalDateTime) - Дата продажи
+   - notes (Text) - Примечания
+
+===============================================
+
+7. CUSTOMERREQUEST (Обращения клиентов)
+   Таблица: customer_requests
+   
+   Атрибуты:
+   - id (Long) - Идентификатор [PK, AUTO_INCREMENT]
+   - customerName (String, 100) - Имя клиента [NOT NULL]
+   - email (String, 100) - Email
+   - phone (String, 20) - Телефон [NOT NULL]
+   - carModel (CarModel) - Модель автомобиля [FK ? car_models]
+   - message (Text) - Сообщение [NOT NULL]
+   - status (String, 50) - Статус [DEFAULT 'NEW']
+   - response (Text) - Ответ
+   - employee (Employee) - Ответивший сотрудник [FK ? employees]
+   - createdAt (LocalDateTime) - Дата создания
+   - updatedAt (LocalDateTime) - Дата обновления
+
+===============================================
+
+8. TESTDRIVE (Тест-драйвы)
+   Таблица: test_drives
+   
+   Атрибуты:
+   - id (Long) - Идентификатор [PK, AUTO_INCREMENT]
+   - customer (Customer) - Клиент [FK ? customers, NOT NULL]
+   - carModel (CarModel) - Модель автомобиля [FK ? car_models, NOT NULL]
+   - testDate (LocalDate) - Дата тест-драйва [NOT NULL]
+   - testTime (LocalTime) - Время тест-драйва [NOT NULL]
+   - comments (String, 500) - Комментарии
+   - status (String, 50) - Статус [NOT NULL, DEFAULT 'В ожидании']
+   - createdAt (LocalDateTime) - Дата создания
+
+   Возможные статусы: 'В ожидании', 'Подтверждено', 'Завершено', 'Отменено'
+
+===============================================
+
+9. SERVICEAPPOINTMENT (Записи на техническое обслуживание)
+   Таблица: service_appointments
+   
+   Атрибуты:
+   - id (Long) - Идентификатор [PK, AUTO_INCREMENT]
+   - customer (Customer) - Клиент [FK ? customers, NOT NULL]
+   - carInfo (String, 200) - Информация об автомобиле [NOT NULL]
+   - serviceType (String, 100) - Тип обслуживания [NOT NULL]
+   - appointmentDate (LocalDate) - Дата записи [NOT NULL]
+   - appointmentTime (LocalTime) - Время записи [NOT NULL]
+   - description (Text) - Описание проблемы
+   - status (String, 50) - Статус [NOT NULL, DEFAULT 'В ожидании']
+   - createdAt (LocalDateTime) - Дата создания
+
+   Возможные статусы: 'В ожидании', 'Подтверждено', 'Завершено', 'Отменено'
+
+===============================================
+
+10. CREDITOFFER (Кредитные предложения)
+    Таблица: credit_offers
+    
+    Атрибуты:
+    - id (Long) - Идентификатор [PK, AUTO_INCREMENT]
+    - name (String, 100) - Название предложения [NOT NULL]
+    - minRate (BigDecimal 5,2) - Минимальная ставка (%) [NOT NULL]
+    - maxRate (BigDecimal 5,2) - Максимальная ставка (%) [NOT NULL]
+    - minTermMonths (Integer) - Минимальный срок (месяцы) [NOT NULL]
+    - maxTermMonths (Integer) - Максимальный срок (месяцы) [NOT NULL]
+    - minDownPaymentPercent (BigDecimal 5,2) - Минимальный первый взнос (%) [NOT NULL]
+    - description (Text) - Описание
+    - active (Boolean) - Активно [NOT NULL, DEFAULT true]
+    - createdAt (LocalDateTime) - Дата создания
+
+===============================================
+
+11. CAR_MODEL_SUPPLIERS (Связующая таблица Many-to-Many)
+    Таблица: car_model_suppliers
+    
+    Атрибуты:
+    - car_model_id (Long) - FK ? car_models [PRIMARY KEY]
+    - supplier_id (Long) - FK ? suppliers [PRIMARY KEY]
+
+===============================================
+
+СВЯЗИ МЕЖДУ ТАБЛИЦАМИ:
+
+1. CarModel ? Supplier (Many-to-Many через car_model_suppliers)
+   - Одна модель автомобиля может быть у нескольких поставщиков
+   - Один поставщик может предлагать несколько моделей
+
+2. PriceList ? CarModel (Many-to-One)
+   - Один прейскурант относится к одной модели
+   - Одна модель может иметь несколько прейскурантов (для разных годов)
+
+3. Sale ? Customer (Many-to-One)
+   - Одна продажа относится к одному клиенту
+   - Один клиент может совершить несколько покупок
+
+4. Sale ? CarModel (Many-to-One)
+   - Одна продажа относится к одной модели
+   - Одна модель может быть продана много раз
+
+5. Sale ? Employee (Many-to-One)
+   - Одна продажа оформляется одним сотрудником
+   - Один сотрудник может оформить несколько продаж
+
+6. Sale ? PriceList (Many-to-One)
+   - Одна продажа использует один прейскурант
+   - Один прейскурант может быть использован в нескольких продажах
+
+7. CustomerRequest ? CarModel (Many-to-One)
+   - Одна заявка может относиться к одной модели (опционально)
+
+8. CustomerRequest ? Employee (Many-to-One)
+   - На одну заявку может ответить один сотрудник (опционально)
+
+9. TestDrive ? Customer (Many-to-One)
+   - Одна запись на тест-драйв от одного клиента
+   - Один клиент может записаться на несколько тест-драйвов
+
+10. TestDrive ? CarModel (Many-to-One)
+    - Одна запись на тест-драйв одной модели
+    - Одна модель может иметь несколько записей на тест-драйв
+
+11. ServiceAppointment ? Customer (Many-to-One)
+    - Одна запись на ТО от одного клиента
+    - Один клиент может записаться на несколько ТО
+
+===============================================
+
+ОБОЗНАЧЕНИЯ:
+- PK - Primary Key (первичный ключ)
+- FK - Foreign Key (внешний ключ)
+- NOT NULL - обязательное поле
+- UNIQUE - уникальное значение
+- AUTO_INCREMENT - автоматическая генерация значения
+- DEFAULT - значение по умолчанию
+- GENERATED - вычисляемое поле
+
+===============================================
+
+
